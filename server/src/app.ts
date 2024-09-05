@@ -22,7 +22,10 @@ app.use(
   })
 );
 app.use(express.static(path.join(__dirname, '../public/www')));
-// app.use(express.static(path.join(__dirname, '../public')));
+app.use(
+  '/robots.txt',
+  express.static(path.join(__dirname, '../public/robots.txt'))
+);
 app.use(express.urlencoded({extended: true})); // Parse URL-encoded bodies using qs library
 app.use(express.json()); // Parse JSON bodies
 app.use(cors());

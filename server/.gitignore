@@ -11,6 +11,7 @@ node_modules
 dist
 public/images
 *.local
+public/www
 
 # Editor directories and files
 .idea

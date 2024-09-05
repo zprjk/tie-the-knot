@@ -1,0 +1,11 @@
+{
+  // Set vscode formatter to Prettier
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+
+  // Format on save
+  "editor.formatOnSave": true,
+
+  // Point project Typescript version instead vscode's version
+  "typescript.tsdk": "./node_modules/typescript/lib",
+  "typescript.enablePromptUseWorkspaceTsdk": true
+}

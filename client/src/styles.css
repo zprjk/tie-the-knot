@@ -1,0 +1,36 @@
+/* --- Custom File Input --- */
+.button-file {
+  color: transparent !important;
+}
+
+.button-file::-webkit-file-upload-button {
+  visibility: hidden;
+}
+.button-file::before {
+  content: 'Enviar';
+  display: inline-block;
+  color: black;
+  width: 100%;
+  text-align: center;
+}
+
+.button-file.is-loading::before {
+  content: '';
+}
+
+.modal-content {
+  display: flex;
+  place-content: center;
+  max-height: 90%;
+  width: 90%;
+}
+
+#modal-img {
+  background-color: #2e333d8f;
+  border: 1px solid white;
+}
+
+.modal-close {
+  border: 1px solid white;
+  background-color: #2e333de4;
+}

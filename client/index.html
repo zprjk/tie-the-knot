@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+    />
+    <link rel="stylesheet" href="./src/styles.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Susana & José Pedro</title>
+  </head>
+  <body>
+    <div id="app" class="content container is-max-desktop p-5">
+      <h1 class="has-text-centered">Olá, bem-vindo ao nosso casamento</h1>
+      <p class="has-text-centered">
+        Estamos muito felizes por teres aceitado o nosso convite. Aqui podes
+        partilhar os teus momentos connosco.
+      </p>
+
+      <div class="columns is-mobile is-centered">
+        <input
+          id="uploader"
+          class="button is-primary column button-file"
+          type="file"
+          accept="image/*"
+          multiple
+          onchange="window.zpr.upload(this, event)"
+        />
+      </div>
+
+      <div id="gallery" class="grid is-col-min-3 is-mobile is-centered"></div>
+    </div>
+
+    <div id="modal" class="modal">
+      <div class="modal-background" onclick="window.zpr.closeModal()"></div>
+      <div class="modal-content">
+        <img id="modal-img" class="image" />
+      </div>
+      <button
+        class="modal-close is-large"
+        aria-label="close"
+        onclick="window.zpr.closeModal()"
+      ></button>
+    </div>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

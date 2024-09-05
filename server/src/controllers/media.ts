@@ -41,7 +41,7 @@ class MediaController {
         multiples: false,
       });
 
-      form.on('fileBegin', (name, file) => {
+      form.on('file', (name, file) => {
         const beautitySize =
           file.size > 1000000
             ? `(${(file.size * 0.000001).toFixed(2)} MB)`

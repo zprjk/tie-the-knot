@@ -25,8 +25,18 @@
   width: 90%;
 }
 
+.modal-content-imgs {
+  position: absolute;
+}
+
+#modal-tiny-img {
+  position: absolute;
+  width: 100%;
+  filter: blur(3px);
+}
+
 #modal-img {
-  background-color: #2e333d8f;
+  /* background-color: #2e333d8f; */
   border: 1px solid white;
 }
 

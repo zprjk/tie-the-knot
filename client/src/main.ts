@@ -76,7 +76,7 @@ async function getGallery() {
       return `
       <div class="cell">
         <figure class="image">
-          <img  src=${baseApiUrl}/${item.thumbnail} onclick="window.zpr.openModal(this, '${item.url}')" />
+          <img  src=${baseApiUrl}/${item.thumbnail} onclick="window.zpr.openModal(this, '${item.url}', '${item.thumbnail}')" />
         </figure>
       </div>`;
     })
@@ -85,13 +85,18 @@ async function getGallery() {
   gallery.innerHTML = html;
 }
 
-function openModal(_: HTMLImageElement, url: string) {
+function openModal(_: HTMLImageElement, url: string, thumbnail: string) {
   const modal = document.getElementById('modal');
   if (!modal) {
     return;
   }
 
   const modalImg = document.getElementById('modal-img') as HTMLImageElement;
+  const modalTinyImg = document.getElementById(
+    'modal-tiny-img'
+  ) as HTMLImageElement;
+
+  modalTinyImg.src = `${baseApiUrl}/${thumbnail}`;
   modalImg.src = `${baseApiUrl}/${url}`;
   modal.classList.add('is-active');
   document.documentElement.classList.add('is-clipped');

@@ -1,21 +1,24 @@
 /* --- Custom File Input --- */
-.button-file {
+#btn-upload {
   color: transparent !important;
 }
 
-.button-file::-webkit-file-upload-button {
+#btn-upload::-webkit-file-upload-button {
   visibility: hidden;
 }
-.button-file::before {
-  content: 'Enviar';
+#btn-upload::before {
+  content: 'Enviar fotos';
   display: inline-block;
   color: black;
   width: 100%;
   text-align: center;
 }
 
-.button-file.is-loading::before {
-  content: '';
+#btn-upload.is-loading::before {
+  content: 'Enviando, por favor aguarde...';
+}
+#btn-upload.is-loading::after {
+  display: none; /* Remove the spinner */
 }
 
 .modal-content {
@@ -23,6 +26,7 @@
   place-content: center;
   max-height: 90%;
   width: 90%;
+  animation: zoomIn 0.3s;
 }
 
 .modal-content-imgs {
@@ -32,7 +36,7 @@
 #modal-tiny-img {
   position: absolute;
   width: 100%;
-  filter: blur(3px);
+  filter: blur(3px) grayscale(60%);
 }
 
 #modal-img {
@@ -43,4 +47,36 @@
 .modal-close {
   border: 1px solid white;
   background-color: #2e333de4;
+}
+
+#progress {
+  display: none;
+}
+#progress.is-active {
+  display: flex;
+}
+
+#logo {
+  display: flex;
+  place-content: center;
+  background-image: url('./assets/logo_w.webp');
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+
+@media (prefers-color-scheme: dark) {
+  #logo {
+    background-image: url('./assets/logo_b.webp');
+  }
+}
+
+@keyframes zoomIn {
+  0% {
+    /* from */
+    transform: scale(0);
+  }
+  100% {
+    /* to */
+    transform: scale(1);
+  }
 }

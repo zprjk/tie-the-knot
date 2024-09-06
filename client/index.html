@@ -15,19 +15,30 @@
     <link rel="stylesheet" href="./src/styles.css" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Susana & José Pedro</title>
+    <meta name="description" content="Casamento de Susana e José Pedro" />
   </head>
   <body>
     <div id="app" class="content container is-max-desktop p-5">
-      <h1 class="has-text-centered">Olá, bem-vindo ao nosso casamento</h1>
-      <p class="has-text-centered">
-        Estamos muito felizes por teres aceitado o nosso convite. Aqui podes
-        partilhar os teus momentos connosco.
+      <div class="columns is-mobile is-centered">
+        <div id="logo" class="image is-128x128"></div>
+      </div>
+      <h2 class="title has-text-centered">
+        Bem-vindos ao nosso casamento 🤵‍♂️👰‍♀️
+      </h2>
+      <p class="subtitle is-6 has-text-centered">
+        Estamos muito felizes por terem aceite o nosso convite. Obrigado 😃
       </p>
 
-      <div class="columns is-mobile is-centered">
+      <hr />
+
+      <h2 class="title has-text-centered">Partilha 📸</h2>
+      <p class="subtitle is-6 has-text-centered">
+        Partilhem os vossos momentos especiais
+      </p>
+      <div class="columns is-mobile is-centered m-0">
         <input
-          id="uploader"
-          class="button is-primary column button-file"
+          id="btn-upload"
+          class="button is-primary column"
           type="file"
           accept="image/*"
           multiple
@@ -35,6 +46,24 @@
         />
       </div>
 
+      <div
+        id="progress"
+        class="columns is-mobile is-centered m-0 p-2"
+        style="flex-direction: column"
+      >
+        <progress
+          id="progress-bar"
+          class="progress is-small"
+          max="100"
+        ></progress>
+      </div>
+
+      <hr />
+
+      <h2 class="title has-text-centered">Galeria 🖼️</h2>
+      <p class="subtitle is-6 has-text-centered">
+        As fotos partilhadas por voçês
+      </p>
       <div id="gallery" class="grid is-col-min-3 is-mobile is-centered"></div>
     </div>
 

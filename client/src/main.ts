@@ -28,7 +28,9 @@ async function upload(input: HTMLInputElement) {
     return;
   }
 
+  const progress = document.getElementById('progress')!;
   input.classList.add('is-loading');
+  progress.classList.add('is-active');
 
   const files = Array.from(filesList);
   const chunkSize = 3;
@@ -56,6 +58,7 @@ async function upload(input: HTMLInputElement) {
   }
 
   input.classList.remove('is-loading');
+  progress.classList.remove('is-active');
   window.location.reload();
 }
 
@@ -76,7 +79,7 @@ async function getGallery() {
       return `
       <div class="cell">
         <figure class="image">
-          <img  src=${baseApiUrl}/${item.thumbnail} onclick="window.zpr.openModal(this, '${item.url}', '${item.thumbnail}')" />
+          <img loading="lazy" width="200" height="200" src=${baseApiUrl}/${item.thumbnail} onclick="window.zpr.openModal(this, '${item.url}', '${item.thumbnail}')" />
         </figure>
       </div>`;
     })

@@ -29,12 +29,16 @@ async function upload(input: HTMLInputElement) {
   }
 
   const progress = document.getElementById('progress')!;
+  const progressText = document.getElementById('progress-text')!;
+
   input.classList.add('is-loading');
   progress.classList.add('is-active');
 
   const files = Array.from(filesList);
   const chunkSize = 3;
   const totalChunks = Math.ceil(files.length / chunkSize);
+
+  progressText.innerText = `0/${files.length}`;
 
   for (let i = 0; i < totalChunks; i++) {
     const start = i * chunkSize;
@@ -52,14 +56,17 @@ async function upload(input: HTMLInputElement) {
         method: 'POST',
         body: formData,
       });
+      progressText.innerText = `${end}/${files.length}`;
     } catch (err) {
       console.error(err);
     }
   }
 
-  input.classList.remove('is-loading');
-  progress.classList.remove('is-active');
-  window.location.reload();
+  setTimeout(() => {
+    input.classList.remove('is-loading');
+    progress.classList.remove('is-active');
+    window.location.reload();
+  }, 1000);
 }
 
 async function getGallery() {

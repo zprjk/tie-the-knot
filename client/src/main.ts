@@ -1,3 +1,9 @@
+import {resizeImage} from './resize-image';
+
+const maxFilesPerUpload = 1;
+const uploadType = 'optimized' as 'optimized' | 'original';
+const optimizedMaxUploadSize = 1200;
+
 // --- Hack ---
 // In order to `npm run build` this file properly.
 // @ts-ignore
@@ -5,10 +11,15 @@ window.zpr = {
   upload,
   openModal,
   closeModal,
+  nextImage,
+  prevImage,
 };
 
 const isLocalhost = import.meta.url.match('//localhost');
 const isPublicIP = import.meta.url.match(/\/\/(\d+\.\d+\.\d+\.\d+)/);
+
+let galleryData: any[] = [];
+let modalIndex = 0;
 
 const baseApiUrl = isLocalhost
   ? // running npm run dev -- --host
@@ -20,7 +31,6 @@ const baseApiUrl = isLocalhost
     '.';
 
 async function upload(input: HTMLInputElement) {
-  console.log('uploading..');
   const filesList = input.files;
 
   if (!filesList || filesList.length === 0) {
@@ -35,38 +45,54 @@ async function upload(input: HTMLInputElement) {
   progress.classList.add('is-active');
 
   const files = Array.from(filesList);
-  const chunkSize = 3;
-  const totalChunks = Math.ceil(files.length / chunkSize);
+  const totalChunks = Math.ceil(files.length / maxFilesPerUpload);
+  const fotosStr = files.length === 1 ? 'foto' : 'fotos';
 
-  progressText.innerText = `0/${files.length}`;
+  progressText.innerText = `0/${files.length} ${fotosStr}`;
 
   for (let i = 0; i < totalChunks; i++) {
-    const start = i * chunkSize;
+    const formData = new FormData();
+    const start = i * maxFilesPerUpload;
     const end =
-      start + chunkSize > files.length ? files.length : start + chunkSize;
+      start + maxFilesPerUpload > files.length
+        ? files.length
+        : start + maxFilesPerUpload;
     const chunkFiles = files.slice(start, end);
 
-    const formData = new FormData();
-    Array.from(chunkFiles).forEach((file, idx) => {
-      formData.append(String(idx), file);
-    });
+    if (uploadType === 'original') {
+      Array.from(chunkFiles).forEach(async (file, idx) => {
+        const fileMb = (file.size / 1024 / 1024).toFixed(2);
+        console.log('uploading:', fileMb, 'MB');
+        formData.append(String(idx), file);
+      });
+    } else {
+      for (let idx = 0; idx < chunkFiles.length; idx++) {
+        const file = chunkFiles[idx];
+        const resizedFile = await resizeImage({
+          maxSize: optimizedMaxUploadSize,
+          file,
+        });
+        const fileMb = (resizedFile.size / 1024 / 1024).toFixed(2);
+        console.log('uploading:', fileMb, 'MB');
+        formData.append(String(idx), resizedFile);
+      }
+    }
 
     try {
-      await fetch(`${baseApiUrl}/media`, {
-        method: 'POST',
-        body: formData,
-      });
-      progressText.innerText = `${end}/${files.length}`;
+      await fetch(`${baseApiUrl}/media`, {method: 'POST', body: formData});
+      progressText.innerText = `${end}/${files.length} ${fotosStr}`;
     } catch (err) {
       console.error(err);
     }
   }
 
+  progressText.innerText = `${files.length}/${files.length} ${fotosStr} ✅`;
+
   setTimeout(() => {
     input.classList.remove('is-loading');
     progress.classList.remove('is-active');
     window.location.reload();
-  }, 1000);
+  }, 1500);
 }
 
 async function getGallery() {
@@ -82,20 +108,25 @@ async function getGallery() {
     return;
   }
   const html = data
-    .map((item: any) => {
+    .map((item: any, idx: number) => {
       return `
       <div class="cell">
         <figure class="image">
-          <img loading="lazy" width="200" height="200" src=${baseApiUrl}/${item.thumbnail} onclick="window.zpr.openModal(this, '${item.url}', '${item.thumbnail}')" />
+          <img loading="lazy" class="thumbnail" width="200" height="200" src=${baseApiUrl}/${item.thumbnail} onclick="window.zpr.openModal(${idx})" />
         </figure>
       </div>`;
     })
     .join('');
 
+  galleryData = data;
   gallery.innerHTML = html;
 }
 
-function openModal(_: HTMLImageElement, url: string, thumbnail: string) {
+function openModal(index: number) {
+  modalIndex = index;
+  const item = galleryData[index];
+  const url = item.url;
+  const thumbnail = item.thumbnail;
   const modal = document.getElementById('modal');
   if (!modal) {
     return;
@@ -106,8 +137,16 @@ function openModal(_: HTMLImageElement, url: string, thumbnail: string) {
     'modal-tiny-img'
   ) as HTMLImageElement;
 
-  modalTinyImg.src = `${baseApiUrl}/${thumbnail}`;
-  modalImg.src = `${baseApiUrl}/${url}`;
+  modalTinyImg.style.display = 'none';
+  modalImg.style.display = 'none';
+
+  setTimeout(() => {
+    modalTinyImg.style.display = 'block';
+    modalImg.style.display = 'block';
+    modalTinyImg.src = `${baseApiUrl}/${thumbnail}`;
+    modalImg.src = `${baseApiUrl}/${url}`;
+  }, 0);
+
   modal.classList.add('is-active');
   document.documentElement.classList.add('is-clipped');
 }
@@ -115,13 +154,37 @@ function openModal(_: HTMLImageElement, url: string, thumbnail: string) {
 function closeModal() {
   const modal = document.getElementById('modal');
   const modalImg = document.getElementById('modal-img') as HTMLImageElement;
+  const modalTinyImg = document.getElementById(
+    'modal-tiny-img'
+  ) as HTMLImageElement;
   if (!modal || !modalImg) {
     return;
   }
 
   modal.classList.remove('is-active');
   modalImg.src = '';
+  modalTinyImg.src = '';
   document.documentElement.classList.remove('is-clipped');
+}
+
+function nextImage() {
+  const nextIndex = modalIndex + 1;
+
+  if (nextIndex >= galleryData.length) {
+    openModal(0);
+  } else {
+    openModal(nextIndex);
+  }
+}
+
+function prevImage() {
+  const prevIndex = modalIndex - 1;
+
+  if (prevIndex < 0) {
+    openModal(galleryData.length - 1);
+  } else {
+    openModal(prevIndex);
+  }
 }
 
 getGallery();

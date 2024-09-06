@@ -23,7 +23,7 @@
         <div id="logo" class="image is-128x128"></div>
       </div>
       <h2 class="title has-text-centered">
-        Bem-vindos ao nosso casamento 🤵‍♂️👰‍♀️
+        Bem-vindos ao nosso casamento 👰‍♀️🤵‍♂️
       </h2>
       <p class="subtitle is-6 has-text-centered">
         Estamos muito felizes por terem aceite o nosso convite. Obrigado 😃
@@ -53,7 +53,6 @@
       >
         <div class="has-text-centered">
           <span id="progress-text"></span>
-          <span>fotos</span>
         </div>
         <progress
           id="progress-bar"
@@ -68,7 +67,17 @@
       <p class="subtitle is-6 has-text-centered">
         As fotos partilhadas por voçês
       </p>
-      <div id="gallery" class="grid is-col-min-3 is-mobile is-centered"></div>
+      <div id="gallery" class="grid is-col-min-4 is-mobile is-centered">
+        <div class="cell thumbnail skeleton-block"></div>
+        <div class="cell thumbnail skeleton-block"></div>
+        <div class="cell thumbnail skeleton-block"></div>
+        <div class="cell thumbnail skeleton-block"></div>
+        <div class="cell thumbnail skeleton-block"></div>
+        <div class="cell thumbnail skeleton-block"></div>
+        <div class="cell thumbnail skeleton-block"></div>
+        <div class="cell thumbnail skeleton-block"></div>
+        <div class="cell thumbnail skeleton-block"></div>
+      </div>
     </div>
 
     <div id="modal" class="modal">
@@ -76,6 +85,25 @@
       <div class="modal-content">
         <img id="modal-tiny-img" class="image" />
         <img id="modal-img" class="image" />
+      </div>
+      <div>
+        <button
+          class="button is-large btn-prev"
+          onclick="window.zpr.prevImage()"
+        >
+          <span class="icon">
+            <i class="fa fa-chevron-left"></i>
+          </span>
+        </button>
+
+        <button
+          class="button is-large btn-next"
+          onclick="window.zpr.nextImage()"
+        >
+          <span class="icon">
+            <i class="fa fa-chevron-right"></i>
+          </span>
+        </button>
       </div>
       <button
         class="modal-close is-large"

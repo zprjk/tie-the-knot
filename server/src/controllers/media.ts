@@ -9,6 +9,7 @@ import {
   upldOutputDir,
   upldThumbnailDir,
 } from '../utils/constants';
+import {extFromMimeType} from '../utils/ext-from-mime-type';
 
 const sync = () => {
   fs.ensureDirSync(upldOutputDir);
@@ -76,7 +77,7 @@ class MediaController {
       for (const file of files) {
         const hash = file.hash;
         const oldPath = file.filepath;
-        const ext = oldPath.split('.').pop();
+        const ext = extFromMimeType(file.mimetype ?? 'n/a');
 
         if (!hash) {
           return res.status(400).json({message: 'Invalid file hash.'});

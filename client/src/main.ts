@@ -4,6 +4,8 @@ const maxFilesPerUpload = 1;
 const uploadType = 'optimized' as 'optimized' | 'original';
 const optimizedMaxUploadSize = 1200;
 
+const isSpecial = new URLSearchParams(location.search).has('iamgod');
+
 // --- Hack ---
 // In order to `npm run build` this file properly.
 // @ts-ignore
@@ -13,6 +15,7 @@ window.zpr = {
   closeModal,
   nextImage,
   prevImage,
+  delImage,
 };
 
 const isLocalhost = import.meta.url.match('//localhost');
@@ -122,6 +125,31 @@ async function getGallery() {
   gallery.innerHTML = html;
 }
 
+async function delImage() {
+  if (!isSpecial) return;
+
+  const decision = confirm('Are you sure you?');
+  if (!decision) {
+    return;
+  }
+  const item = galleryData[modalIndex];
+  if (!item) {
+    console.error('No image to delete');
+    return;
+  }
+
+  const hash = item.hash;
+  const res = await fetch(`${baseApiUrl}/media/${hash}`, {
+    method: 'DELETE',
+  });
+  if (!res.ok) {
+    console.error('Failed to delete image');
+    return;
+  }
+
+  window.location.reload();
+}
+
 function openModal(index: number) {
   modalIndex = index;
   const item = galleryData[index];
@@ -195,3 +223,25 @@ document.addEventListener('keydown', (e) => {
     closeModal();
   }
 });
+
+// add del button for special user
+(() => {
+  if (isSpecial) {
+    const elem = document.getElementById('special');
+
+    if (!elem) {
+      return;
+    }
+
+    // @ts-ignore
+    const delFunc = window.zpr.delImage;
+
+    elem.innerHTML = `
+    <button class="modal-del icon is-medium" onclick="window.zpr.delImage()">
+      <span class="icon">
+        <i class="fa fa-trash"></i>
+      </span>
+      </button>
+    `;
+  }
+})();

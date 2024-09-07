@@ -2,9 +2,11 @@ import {Request, Response} from 'express';
 import formidable from 'formidable';
 import fs from 'fs-extra';
 import sharp from 'sharp';
+import path from 'path';
 import {UpldFile} from '../utils/types';
 import {ensureSavedFilesExistSync} from '../utils/ensure-saved-files-exist';
 import {
+  upldArchiveDir,
   upldFilesJson,
   upldOutputDir,
   upldThumbnailDir,
@@ -30,6 +32,28 @@ class MediaController {
     } catch (err) {
       sync();
       res.json([]);
+    }
+  }
+
+  async del(req: Request, res: Response, next: any) {
+    try {
+      const files = (await fs.readJson(upldFilesJson)) as UpldFile[];
+      const hash = req.params.hash;
+
+      const fileFound = files.find((x: UpldFile) => x.hash === hash);
+      const result = files.filter((x: UpldFile) => x.hash !== hash);
+      await fs.writeJSON(upldFilesJson, result);
+      await fs.ensureDir(upldArchiveDir);
+      if (fileFound) {
+        const fileUrl = fileFound.url.replace('images/', '');
+        const src = path.join(upldOutputDir, fileUrl);
+        const dest = path.join(upldArchiveDir, fileUrl);
+        await fs.move(src, dest, {overwrite: true});
+      }
+
+      res.json(result);
+    } catch (err) {
+      next(err);
     }
   }
 

@@ -58,6 +58,14 @@
   background-color: #2e333de4;
 }
 
+.modal-del {
+  position: fixed;
+  top: 1rem;
+  left: 1rem;
+  border: 1px solid white;
+  border-radius: 50%;
+}
+
 .btn-next {
   position: absolute;
   right: 0;

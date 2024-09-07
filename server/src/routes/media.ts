@@ -5,3 +5,4 @@ export const mediaRoutes = Router();
 
 mediaRoutes.get('/', mediaController.get);
 mediaRoutes.post('/', mediaController.post);
+mediaRoutes.delete('/:hash', mediaController.del);

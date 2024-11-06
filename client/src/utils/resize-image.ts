@@ -2,6 +2,21 @@ type IResizeImageOptions = {
   maxSize: number;
   file: File;
 };
+
+/**
+ * Resize an image to a maximum size
+ *
+ * @example
+ * ```ts
+ * const someFile = document.getElementById('file').files[0];
+ * const resizedFile = await resizeImage({
+ *  maxSize: 3000, // Max 3MB file size
+ *  file: someFile
+ * });
+ *
+ * console.log(resizedFile); // Blob
+ * ```
+ */
 export function resizeImage(settings: IResizeImageOptions): Promise<Blob> {
   const file = settings.file;
   const fileMimeType = file.type;

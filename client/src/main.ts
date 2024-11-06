@@ -1,15 +1,21 @@
-import {resizeImage} from './resize-image';
+import {getApiBaseURL} from './utils/get-api-url';
+import {resizeImage} from './utils/resize-image';
 
-const maxFilesPerUpload = 1;
+// Config
+const maxFilesPerUpload = 2;
 const uploadType = 'optimized' as 'optimized' | 'original';
-const optimizedMaxUploadSize = 1200;
-
+const optimizedMaxUploadSize = 2500;
+// Detect server url connection
+const baseApiUrl = getApiBaseURL();
+// Hack: check if user has special permissions
 const isSpecial = new URLSearchParams(location.search).has('iamgod');
 
-// --- Hack ---
-// In order to `npm run build` this file properly.
-// @ts-ignore
-window.zpr = {
+// Cache
+let galleryData: any[] = [];
+let modalIndex = 0;
+
+// Hack: In order to `npm run build` this file properly.
+window._tie = {
   upload,
   openModal,
   closeModal,
@@ -17,21 +23,6 @@ window.zpr = {
   prevImage,
   delImage,
 };
-
-const isLocalhost = import.meta.url.match('//localhost');
-const isPublicIP = import.meta.url.match(/\/\/(\d+\.\d+\.\d+\.\d+)/);
-
-let galleryData: any[] = [];
-let modalIndex = 0;
-
-const baseApiUrl = isLocalhost
-  ? // running npm run dev -- --host
-    'http://localhost:3000'
-  : // running npx serve -s dist -p 5173
-  isPublicIP
-  ? `http://${isPublicIP[1]}`
-  : // from domain(production)
-    '.';
 
 async function upload(input: HTMLInputElement) {
   const filesList = input.files;
@@ -110,12 +101,15 @@ async function getGallery() {
   if (!gallery) {
     return;
   }
+
+  // Ensure type safety since we are binding this func to innerHTML string below.
+  window._tie.openModal;
   const html = data
     .map((item: any, idx: number) => {
       return `
       <div class="cell">
         <figure class="image">
-          <img loading="lazy" class="thumbnail" width="200" height="200" src=${baseApiUrl}/${item.thumbnail} onclick="window.zpr.openModal(${idx})" />
+          <img loading="lazy" class="thumbnail" width="200" height="200" src=${baseApiUrl}/${item.thumbnail} onclick="window._tie.openModal(${idx})" />
         </figure>
       </div>`;
     })
@@ -215,16 +209,10 @@ function prevImage() {
   }
 }
 
+// Fetch gallery on init
 getGallery();
 
-// watch escape btn and close modal
-document.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape') {
-    closeModal();
-  }
-});
-
-// add del button for special user
+// Attach del button to DOM for the special user.
 (() => {
   if (isSpecial) {
     const elem = document.getElementById('special');
@@ -233,11 +221,12 @@ document.addEventListener('keydown', (e) => {
       return;
     }
 
-    // @ts-ignore
-    const delFunc = window.zpr.delImage;
+    // Ensure type safety since we are binding this func to innerHTML string below.
+    const delFn = window._tie.delImage;
+    delFn;
 
     elem.innerHTML = `
-    <button class="modal-del icon is-medium" onclick="window.zpr.delImage()">
+    <button class="modal-del icon is-medium" onclick="window._tie.delImage()">
       <span class="icon">
         <i class="fa fa-trash"></i>
       </span>
@@ -245,3 +234,10 @@ document.addEventListener('keydown', (e) => {
     `;
   }
 })();
+
+// Watch escape btn and close modal
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    closeModal();
+  }
+});

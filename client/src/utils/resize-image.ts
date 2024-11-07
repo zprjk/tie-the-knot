@@ -1,4 +1,4 @@
-type IResizeImageOptions = {
+type ResizeImageOptions = {
   maxSize: number;
   file: File;
 };
@@ -17,25 +17,13 @@ type IResizeImageOptions = {
  * console.log(resizedFile); // Blob
  * ```
  */
-export function resizeImage(settings: IResizeImageOptions): Promise<Blob> {
+export function resizeImage(settings: ResizeImageOptions): Promise<Blob> {
   const file = settings.file;
   const fileMimeType = file.type;
   const maxSize = settings.maxSize;
   const reader = new FileReader();
   const image = new Image();
-  const canvas = document.createElement('canvas');
-
-  const dataURItoBlob = (dataURI: string) => {
-    const bytes =
-      dataURI.split(',')[0].indexOf('base64') >= 0
-        ? atob(dataURI.split(',')[1])
-        : unescape(dataURI.split(',')[1]);
-    const mime = dataURI.split(',')[0].split(':')[1].split(';')[0];
-    const max = bytes.length;
-    const ia = new Uint8Array(max);
-    for (var i = 0; i < max; i++) ia[i] = bytes.charCodeAt(i);
-    return new Blob([ia], {type: mime});
-  };
+  const canvas = new OffscreenCanvas(1, 1); // https://developer.mozilla.org/en-US/docs/Web/API/OffscreenCanvas
 
   const resize = () => {
     let width = image.width;
@@ -57,8 +45,7 @@ export function resizeImage(settings: IResizeImageOptions): Promise<Blob> {
     canvas.height = height;
     canvas.getContext('2d')?.drawImage(image, 0, 0, width, height);
 
-    let dataUrl = canvas.toDataURL(fileMimeType);
-    return dataURItoBlob(dataUrl);
+    return canvas.convertToBlob();
   };
 
   return new Promise((ok, no) => {

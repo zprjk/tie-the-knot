@@ -53,17 +53,18 @@
   border: 1px solid white;
 }
 
-.modal-close {
-  border: 1px solid white;
-  background-color: #2e333de4;
-}
-
-.modal-del {
+#modal-del {
   position: fixed;
   top: 1rem;
   left: 1rem;
   border: 1px solid white;
   border-radius: 50%;
+  background-color: #2e333de4;
+}
+
+.modal-close {
+  border: 1px solid white;
+  background-color: #2e333de4;
 }
 
 .btn-next {
@@ -101,6 +102,11 @@
   background-image: url('./assets/logo_w.png');
   background-size: contain;
   background-repeat: no-repeat;
+}
+
+.trash-ico {
+  width: 0.9em;
+  content: url('./assets/trash-icon.svg');
 }
 
 @media (prefers-color-scheme: dark) {

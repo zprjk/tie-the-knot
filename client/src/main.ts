@@ -1,17 +1,19 @@
 import {getApiBaseURL} from './utils/get-api-url';
 import {resizeImage} from './utils/resize-image';
+import type {UpldFile} from './types';
 
 // Config
+const uploadType: 'optimized' | 'original' = 'optimized';
 const maxFilesPerUpload = 2;
-const uploadType = 'optimized' as 'optimized' | 'original';
 const optimizedMaxUploadSize = 2500;
+
 // Detect server url connection
 const baseApiUrl = getApiBaseURL();
 // Hack: check if user has special permissions
 const isSpecial = new URLSearchParams(location.search).has('iamgod');
 
 // Cache
-let galleryData: any[] = [];
+let galleryData: UpldFile[] = [];
 let modalIndex = 0;
 
 // Hack: In order to `npm run build` this file properly.
@@ -227,9 +229,9 @@ getGallery();
     delFn;
 
     elem.innerHTML = `
-    <button class="modal-del icon is-medium" onclick="window._tie.delImage()">
+    <button id="modal-del" class="icon is-medium" onclick="window._tie.delImage()">
       <span class="icon">
-        <i class="fa fa-trash"></i>
+        <i class="trash-ico"></i>
       </span>
       </button>
     `;

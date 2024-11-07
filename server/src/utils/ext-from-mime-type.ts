@@ -1,3 +1,4 @@
+/** Get file extension from mime type */
 export function extFromMimeType(mimeType: string): string {
   switch (mimeType) {
     case 'image/jpeg':

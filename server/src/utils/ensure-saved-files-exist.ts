@@ -3,7 +3,7 @@ import {UpldBaseDir, upldFilesJson, upldOutputDir} from './constants';
 import {UpldFile} from './types';
 import path from 'path';
 
-/* Ensure files from json file exist, if don't remove from json */
+/* Ensure files from json file exist. if not, remove from json */
 export function ensureSavedFilesExistSync() {
   try {
     const files: UpldFile[] =

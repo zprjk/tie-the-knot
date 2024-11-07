@@ -1,11 +1,8 @@
 import {app} from './app';
 
 const port = app.get('port');
-
-// const server = https.createServer({key: key, cert: cert}, app);
 const server = app.listen(port, onListening);
 server.on('error', onError);
-// server.listen(port, onListening);
 
 function onError(error: NodeJS.ErrnoException) {
   if (error.syscall !== 'listen') {

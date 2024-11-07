@@ -126,6 +126,7 @@ async function delImage() {
   if (!decision) {
     return;
   }
+
   const item = galleryData[modalIndex];
   if (!item) {
     console.error('No image to delete');
@@ -159,9 +160,9 @@ function openModal(index: number) {
     'modal-tiny-img'
   ) as HTMLImageElement;
 
+  // Visual refresh
   modalTinyImg.style.display = 'none';
   modalImg.style.display = 'none';
-
   setTimeout(() => {
     modalTinyImg.style.display = 'block';
     modalImg.style.display = 'block';

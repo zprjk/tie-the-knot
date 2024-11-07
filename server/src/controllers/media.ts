@@ -25,6 +25,7 @@ class MediaController {
     sync();
   }
 
+  /** Get all uploaded files */
   async get(req: Request, res: Response, next: any) {
     try {
       const files = await fs.readJson(upldFilesJson);
@@ -35,15 +36,24 @@ class MediaController {
     }
   }
 
+  /** Delete an uploaded file */
   async del(req: Request, res: Response, next: any) {
     try {
-      const files = (await fs.readJson(upldFilesJson)) as UpldFile[];
       const hash = req.params.hash;
+      const files = (await fs.readJson(upldFilesJson)) as UpldFile[];
+      let fileFound: UpldFile | undefined;
 
-      const fileFound = files.find((x: UpldFile) => x.hash === hash);
-      const result = files.filter((x: UpldFile) => x.hash !== hash);
+      const result = files.filter((x: UpldFile) => {
+        if (x.hash === hash) {
+          fileFound = x;
+          return false;
+        }
+        return true;
+      });
+
       await fs.writeJSON(upldFilesJson, result);
       await fs.ensureDir(upldArchiveDir);
+
       if (fileFound) {
         const fileUrl = fileFound.url.replace('images/', '');
         const src = path.join(upldOutputDir, fileUrl);
@@ -57,6 +67,7 @@ class MediaController {
     }
   }
 
+  /** Upload a file */
   async post(req: Request, res: Response, next: any) {
     try {
       const form = formidable({
@@ -133,13 +144,9 @@ class MediaController {
           name: file.originalFilename,
         };
 
-        // TODO
-        // await fs.appendFile(upldFilesJson, JSON.stringify(upldFile));
-
         if (!fileExists) result.push(upldFile);
       }
 
-      // TODO
       const existingFiles =
         (await fs.readJson(upldFilesJson, {throws: false})) || [];
       const newFiles = [...result, ...existingFiles];
@@ -152,4 +159,5 @@ class MediaController {
   }
 }
 
+// Singleton
 export const mediaController = new MediaController();

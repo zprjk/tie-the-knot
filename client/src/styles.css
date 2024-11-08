@@ -106,7 +106,17 @@
 
 .trash-ico {
   width: 0.9em;
-  content: url('./assets/trash-icon.svg');
+  content: url('./assets/svg/trash.svg');
+}
+
+.chevron-right {
+  width: 1em;
+  content: url('./assets/svg/chevron-right.svg');
+}
+
+.chevron-left {
+  width: 1em;
+  content: url('./assets/svg/chevron-left.svg');
 }
 
 @media (prefers-color-scheme: dark) {
